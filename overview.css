@@ -1,0 +1,264 @@
+/* ==========================================================================
+   Base + lightbox: copied from website/overview.css (rules for the
+   justified grid, the info panel and the top header are left out).
+   ========================================================================== */
+:root { font-family: "Inter", "Noto Sans HK", sans-serif; color: #191919; --bg: #FAFAF8; background: var(--bg); font-size: 14px; --edge: 14px; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+button, a { color: inherit; font: inherit; -webkit-tap-highlight-color: transparent; }
+button { padding: 0; border: 0; background: none; cursor: pointer; appearance: none; -webkit-appearance: none; }
+a { text-decoration: none; }
+button:focus-visible, a:focus-visible { outline: 1px solid currentColor; outline-offset: 4px; }
+.no-ring:focus-visible { outline: none; }
+[hidden] { display: none !important; }
+/* Both pages anchor the nav to the Overview header's second line. */
+:root {
+  --brand-top: max(12px, env(safe-area-inset-top));
+  --brand-line-height: 1.2;
+  --overview-brand-top: max(18px, env(safe-area-inset-top));
+  --overview-brand-name-size: 28px;
+  --overview-brand-role-size: 12px;
+  --nav-edge: 24px;
+  --nav-size: 12px;
+  --brand-lines-bottom: calc(var(--overview-brand-top) + (var(--overview-brand-name-size) + var(--overview-brand-role-size)) * var(--brand-line-height));
+  --nav-top: calc(var(--brand-lines-bottom) - var(--nav-size) * var(--brand-line-height));
+}
+
+.overview-page {
+  --header-edge: var(--nav-edge);
+  --brand-top: var(--overview-brand-top);
+  --brand-name-size: var(--overview-brand-name-size);
+  --brand-role-size: var(--overview-brand-role-size);
+  --header-pad-bottom: 12px;
+  --header-height: calc(var(--brand-lines-bottom) + var(--header-pad-bottom));
+}
+
+.modal-brand {
+  position: fixed;
+  left: max(var(--header-edge, var(--edge)), env(safe-area-inset-left));
+  top: var(--brand-top);
+  text-align: left;
+  line-height: var(--brand-line-height);
+  font-weight: 400;
+  z-index: 10;
+  font-size: 16px;
+  padding-top: 0;
+}
+.brand-line { display: block; font-size: var(--brand-name-size); letter-spacing: -0.02em; }
+.brand-line + .brand-line { font-size: var(--brand-role-size); }
+
+#modal-close {
+  position: fixed;
+  z-index: 10;
+  color: #000;
+  right: max(var(--nav-edge), env(safe-area-inset-right));
+  top: var(--nav-top);
+  font-size: var(--nav-size);
+  font-weight: 400;
+  line-height: var(--brand-line-height);
+  white-space: nowrap;
+}
+
+.modal-footer { position: fixed; bottom: 0; left: 0; right: 0; padding: 9px max(var(--edge), env(safe-area-inset-right)) max(9px, env(safe-area-inset-bottom)) max(var(--edge), env(safe-area-inset-left)); min-height: calc(53px + max(9px, env(safe-area-inset-bottom))); display: flex; align-items: center; font-size:11px;   text-transform: uppercase;}
+.caption { line-height: 1.25; min-height: 30px; }
+.caption span { display: block; }
+
+.overlay { position: fixed; inset: 0; z-index: 20; background: var(--bg); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
+#modal { background: #fff; touch-action: none; overscroll-behavior-y: none; }
+.stage { position: absolute; inset: var(--header-height) 30px 54px; overflow: hidden; touch-action: none; }
+.modal-media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; user-select: none; -webkit-user-select: none; }
+#modal-close { min-width: 44px; text-align: right; }
+#modal-close::before { content: ""; position: absolute; inset: -16px 0; }
+
+@media (max-width: 767px) {
+  :root {
+    --edge: 10px;
+    --nav-edge: 20px;
+    --nav-size: 10px;
+    --overview-brand-top: var(--brand-top);
+    --overview-brand-name-size: 18px;
+    --overview-brand-role-size: 13px;
+  }
+  .overview-page { --header-pad-bottom: 8px; }
+  .stage { inset: var(--header-height) 0 64px; }
+}
+
+/* The lightbox stage starts at --header-height, so keep the website's phone value. */
+@media (max-width: 560px) {
+  :root {
+    --nav-size: 12px;
+    --nav-mobile-offset: 16px;
+  }
+  .overview-page { --header-height: calc(var(--brand-lines-bottom) + var(--nav-mobile-offset) + 28px); }
+}
+
+/* Leave room when the Gothic wordmark wraps on narrow phones. */
+@media (max-width: 375px) {
+  :root { --nav-mobile-offset: 48px; }
+}
+
+/* Lightbox video controls adapted from Nanase Ito. */
+.modal-video {
+  display: flex; align-items: center; justify-content: center;
+  container-type: size;
+}
+.gm-video-wrap {
+  position: relative;
+  flex: 0 0 auto;
+  width: min(100cqw, 100cqh * var(--ar));
+  height: min(100cqh, 100cqw / var(--ar));
+}
+.gm-video-wrap video {
+  display: block; width: 100%; height: 100%; object-fit: contain;
+  user-select: none; -webkit-user-select: none;
+}
+/* ネイティブの操作UIは使わない（iOS Safari の再生ボタン等も含め非表示） */
+.gm-video-wrap video::-webkit-media-controls,
+.gm-video-wrap video::-webkit-media-controls-start-playback-button,
+.gm-video-wrap video::-webkit-media-controls-panel { display: none !important; -webkit-appearance: none; }
+
+/* コントロール本体（動画の下端に沿わせる） */
+.sv-controls {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 12px 14px;
+  display: flex; flex-direction: column; gap: 6px;
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s ease;
+  z-index: 10;
+  background: linear-gradient(to top, rgba(0,0,0,0.35), rgba(0,0,0,0));
+  border-radius: 0 0 6px 6px;
+}
+/* PC：ホバーで表示 */
+.gm-video-wrap:hover .sv-controls,
+.gm-video-wrap:has(:focus-visible) .sv-controls { opacity: 1; pointer-events: auto; }
+/* JS で付与：表示 */
+.sv-controls.is-visible { opacity: 1; pointer-events: auto; }
+/* プログレスバー（クリックでシーク） */
+.sv-progress {
+  position: relative; height: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  overflow: hidden; cursor: pointer; touch-action: none;
+}
+/* 進捗バー（JS で width を更新） */
+.sv-progress__bar { width: 0; height: 100%; background: #fff; }
+/* ボタン行（左右配置） */
+.sv-nav { display: flex; justify-content: space-between; align-items: center; }
+.sv-nav__right { display: flex; gap: 14px; }
+/* ボタン共通（白文字） */
+.sv-btn {
+  border: none; background: transparent; color: #fff;
+  font-size: 11px; letter-spacing: 0.06em;
+  padding: 4px 0; cursor: pointer;
+}
+/* モバイル用：コントロールの余白を少し減らす */
+@media (max-width: 480px) { .sv-controls { padding: 8px 12px; } }
+/* hover なし（タッチ）：初期非表示、.is-visible で表示 */
+@media (hover: none) and (pointer: coarse) {
+  .gm-video-wrap .sv-controls { opacity: 0; pointer-events: none; transition: opacity .35s ease; }
+  .gm-video-wrap .sv-controls.is-visible,
+  .gm-video-wrap:has(:focus-visible) .sv-controls { opacity: 1; pointer-events: auto; }
+}
+.sv-progress input {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  margin: 0; opacity: 0; cursor: pointer;
+}
+.sv-progress:focus-within { outline: 1px solid #fff; outline-offset: 2px; }
+
+/* Wide photo lightbox: keep the image centered and reserve room for credits. */
+@media (min-width: 1200px) {
+  #modal:has(.stage > img:not([inert])) {
+    --photo-side: clamp(180px, 14vw, 248px);
+    --photo-bottom: 54px;
+    --photo-caption-left: max(var(--header-edge), env(safe-area-inset-left));
+  }
+
+  #modal:has(.stage > img:not([inert])) .stage {
+    inset-inline: var(--photo-side);
+    bottom: var(--photo-bottom);
+  }
+
+  #modal:has(.stage > img:not([inert])) #modal-caption {
+    position: fixed;
+    left: var(--photo-caption-left);
+    top: calc((100dvh + var(--header-height) - var(--photo-bottom)) / 2);
+    width: calc(var(--photo-side) - var(--photo-caption-left) - 24px);
+    min-height: 0;
+    overflow-wrap: anywhere;
+    transform: translateY(-50%);
+  }
+}
+
+/* ==========================================================================
+   Masonry list (new for this page)
+   --cols / --gap drive both Masonry (via .grid-sizer / .gutter-sizer) and
+   the no-JS fallback grid.
+   ========================================================================== */
+html { scrollbar-gutter: stable; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body.overview-page { background: #fff; color: #333; }
+
+.overview-page {
+  --side: 0px;
+  --cols: 1;
+  --gap: 8px;
+  --pad-x: 8px;
+}
+
+/* Header text */
+.site-header { font-size: 13px; line-height: 1.3; }
+.site-header p { margin: 0; }
+.site-name { font-size: 17px; letter-spacing: -0.01em; }
+.site-role { font-size: 13px; }
+.site-nav { display: flex; gap: 8px; margin-top: 10px; }
+.site-nav a:hover { opacity: 0.55; }
+
+.ms-main { outline: none; }
+
+/* Grid */
+.ms-grid { position: relative; }
+.grid-sizer, .ms-item { width: calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols)); }
+.gutter-sizer { width: var(--gap); }
+.ms-item { display: block; position: relative; margin: 0 0 var(--gap); text-align: left; background: #f2f2f0; }
+.ms-media { display: block; width: 100%; aspect-ratio: var(--ar); overflow: hidden; }
+.ms-media img, .ms-media video { display: block; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.ms-item:focus-visible { outline: 1px solid #000; outline-offset: 2px; z-index: 2; }
+
+/* Hover caption (pointer devices only), same look as website/overview.css .ov-cap */
+.ms-cap { position: absolute; left: 4px; top: 2px; z-index: 2; max-width: calc(100% - 8px); color: #000; font-size: 9px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.3; opacity: 0; pointer-events: none; }
+.ms-cap span { display: block; }
+.ms-item::after { content: ""; position: absolute; inset: 0; z-index: 1; background: rgba(255, 255, 255, 0.763); opacity: 0; pointer-events: none; }
+@media (hover: hover) and (pointer: fine) {
+  .ms-item:hover::after, .ms-item:focus-visible::after,
+  .ms-item:hover .ms-cap, .ms-item:focus-visible .ms-cap { opacity: 1; }
+}
+
+/* Fallback when the Masonry script cannot load: plain grid, no overlap. */
+.ms-grid:not(.is-masonry) { display: grid; grid-template-columns: repeat(var(--cols), 1fr); gap: var(--gap); align-items: start; }
+.ms-grid:not(.is-masonry) .grid-sizer, .ms-grid:not(.is-masonry) .gutter-sizer { display: none; }
+.ms-grid:not(.is-masonry) .ms-item { width: auto; margin: 0; }
+
+/* MOBILE ≤767px: header on top, 1 column, near full width */
+.site-header { padding: max(18px, env(safe-area-inset-top)) var(--pad-x) 10px max(var(--pad-x), env(safe-area-inset-left)); }
+.site-header-inner { padding-left: 2px; }
+.ms-main { padding: 0 max(var(--pad-x), env(safe-area-inset-right)) max(var(--pad-x), env(safe-area-inset-bottom)) max(var(--pad-x), env(safe-area-inset-left)); }
+
+/* TABLET 768–1023px (provisional): header on top, 2 columns */
+@media (min-width: 768px) {
+  .overview-page { --cols: 2; --gap: 8px; --pad-x: 20px; }
+  .site-header { padding-top: 28px; padding-bottom: 20px; }
+  .site-name { font-size: 18px; }
+}
+
+/* DESKTOP ≥1024px: fixed side column, text vertically centred, 3 columns */
+@media (min-width: 1024px) {
+  .overview-page { --side: clamp(190px, 17vw, 300px); --cols: 3; --gap: 7px; --pad-x: 10px; }
+  .site-header {
+    position: fixed; top: 0; bottom: 0; left: 0;
+    width: var(--side);
+    display: flex; align-items: center;
+    padding: 0 16px 0 max(20px, env(safe-area-inset-left));
+  }
+  .site-header-inner { padding-left: 0; }
+  .site-nav { flex-direction: column; gap: 2px; margin-top: 18px; }
+  .ms-main { margin-left: var(--side); padding: var(--pad-x) var(--pad-x) 0 0; }
+}

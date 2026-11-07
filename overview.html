@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Overview — NATSUKI ONEYAMA</title>
+  <link rel="stylesheet" href="overview.css">
+  <!-- Masonry: same library as Masonry_Single_01, pinned to an exact version. -->
+  <script src="https://unpkg.com/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" defer></script>
+  <script src="portfolio-data.js" defer></script>
+  <script src="overview.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;700;900&family=Noto+Sans+HK:wght@100..900&display=swap" rel="stylesheet">
+</head>
+<body class="overview-page">
+  <header class="site-header" id="site-header">
+    <div class="site-header-inner">
+      <p class="site-name">Natsuki Oneyama</p>
+      <p class="site-role">Makeup Artist</p>
+      <nav class="site-nav" aria-label="Site">
+        <a href="#portfolio">Portfolio</a>
+        <a href="mailto:natsukioneyama@gmail.com">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="portfolio" class="ms-main" tabindex="-1">
+    <div id="grid" class="ms-grid" aria-label="Selected portfolio">
+      <div class="grid-sizer" aria-hidden="true"></div>
+      <div class="gutter-sizer" aria-hidden="true"></div>
+    </div>
+  </main>
+
+  <!-- Lightbox: markup from website/overview.html -->
+  <section id="modal" class="overlay" role="dialog" aria-modal="true" aria-label="Portfolio media viewer" hidden>
+    <div class="modal-brand">
+      <span class="brand-line">Natsuki Oneyama</span>
+      <span class="brand-line">Makeup Artist</span>
+    </div>
+    <div id="stage" class="stage"></div>
+    <div class="modal-footer">
+      <div id="modal-caption" class="caption" aria-live="polite"></div>
+    </div>
+    <button type="button" id="modal-close" aria-label="Close media viewer">Close</button>
+  </section>
+</body>
+</html>
